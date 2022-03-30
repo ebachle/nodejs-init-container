@@ -24,22 +24,22 @@ spec:
             - name: HELLO
               value: WORLD
           command:
-            - npm
-            - run
-            - build
+            - sh
+            - -c
+            - "npm run build && ls -la /dist"
           volumeMounts:
-            - name: dest
-              mountPath: /dest
+            - name: dist
+              mountPath: /dist
       containers:
       - image: nginx:latest
         name: nodejs-test
         resources: {}
         volumeMounts:
-          - name: dest
+          - name: dist
             mountPath: /usr/share/nginx/html
         ports:
         - containerPort: 80
       volumes:
-        - name: dest
+        - name: dist
           emptyDir: {}
 status: {}
