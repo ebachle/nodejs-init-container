@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: nodejs-test
+  name: nodejs-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nodejs-test
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nodejs-test
+    spec:
+      initContainers:
+        - name: build
+          image: localhost:5001/nodejs-test:latest
+          env:
+            - name: HELLO
+              value: WORLD
+          command:
+            - npm
+            - run
+            - build
+          volumeMounts:
+            - name: dest
+              mountPath: /dest
+      containers:
+      - image: nginx:latest
+        name: nodejs-test
+        resources: {}
+        volumeMounts:
+          - name: dest
+            mountPath: /usr/share/nginx/html
+        ports:
+        - containerPort: 80
+      volumes:
+        - name: dest
+          emptyDir: {}
+status: {}
